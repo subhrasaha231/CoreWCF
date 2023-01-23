@@ -57,9 +57,9 @@ namespace CoreWCF.Channels
         private void CreateQueue(Uri localAddress)
         {
             var queueName = AzureQueueStorageQueueNameConverter.GetAzureQueueStorageQueueName(localAddress);
-            if (!_.Exists(queueName))
+            //if (!_.Exists(queueName))
             {
-                MessageQueue.Create(queueName);
+              //  MessageQueue.Create(queueName);
             }
         }
 
