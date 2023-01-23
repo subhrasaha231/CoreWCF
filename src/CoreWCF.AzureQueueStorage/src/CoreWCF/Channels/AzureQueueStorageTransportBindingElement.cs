@@ -19,16 +19,9 @@ namespace CoreWCF.Channels
         {
         }
 
-        private AzureQueueStorageTransportBindingElement(AzureQueueStorageTransportBindingElement other)
-        {
-            //BrokerProtocol = other.BrokerProtocol;
-            Credentials = other.Credentials;
-            VirtualHost = other.VirtualHost;
-        }
-
         public override BindingElement Clone()
         {
-            return new AzureQueueStorageTransportBindingElement(this);
+            return new AzureQueueStorageTransportBindingElement();
         }
 
 
@@ -49,9 +42,25 @@ namespace CoreWCF.Channels
 
         public override QueueTransportPump BuildQueueTransportPump(BindingContext context)
         {
-            var serviceProvider = context.BindingParameters.Find<IServiceProvider>();
+            IQueueTransport queueTransport = CreateMyQueueTransport(context);
+            return QueueTransportPump.CreateDefaultPump(queueTransport);
+        }
+
+        private IQueueTransport CreateMyQueueTransport(BindingContext context)
+        {
             var serviceDispatcher = context.BindingParameters.Find<IServiceDispatcher>();
-            return new AzureQueueStorageTransportPump(serviceProvider, serviceDispatcher);
+            var serviceProvider = context.BindingParameters.Find<IServiceProvider>();
+            CreateQueue(serviceDispatcher.BaseAddress);
+            return new AzureQueueStorageQueueTransport(serviceDispatcher, serviceProvider);
+        }
+
+        private void CreateQueue(Uri localAddress)
+        {
+            var queueName = AzureQueueStorageQueueNameConverter.GetAzureQueueStorageQueueName(localAddress);
+            if (!_.Exists(queueName))
+            {
+                MessageQueue.Create(queueName);
+            }
         }
 
         /// <summary>
@@ -66,22 +75,6 @@ namespace CoreWCF.Channels
         /// The largest receivable encoded message
         /// </summary>
         public override long MaxReceivedMessageSize { get; set; }
-
-        /// <summary>
-        /// The credentials to use when authenticating with the broker
-        /// </summary>
-        internal ICredentials Credentials { get; set; }
-
-        /// <summary>
-        /// Specifies the broker virtual host
-        /// </summary>
-        internal string VirtualHost { get; set; }
-
-        /// <summary>
-        /// Specifies the version of the AMQP protocol that should be used to
-        /// communicate with the broker
-        /// </summary>
-        //public IProtocol BrokerProtocol { get; set; }
 
     }
 }

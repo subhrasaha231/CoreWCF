@@ -10,7 +10,7 @@ namespace CoreWCF.Configuration
     {
         public static IServiceCollection AddServiceModelAzureQueueStorageSupport(this IServiceCollection services)
         {
-            services.AddSingleton<AzureQueueStorageTransportPump>();
+            //add services
             return services;
         }
     }

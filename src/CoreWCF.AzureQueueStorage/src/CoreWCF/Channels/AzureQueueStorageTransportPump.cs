@@ -17,6 +17,9 @@ namespace CoreWCF.Channels
     public class AzureQueueStorageTransportPump : QueueTransportPump
     {
         private readonly ILogger<AzureQueueStorageTransportPump> _logger;
+        private readonly string _queueName;
+        private readonly string _connectionString;
+
         /*private ConnectionFactory _factory;
         private IConnection _connection;
         private IModel _channel;
@@ -32,6 +35,8 @@ namespace CoreWCF.Channels
 
         public override Task StartPumpAsync(QueueTransportContext queueTransportContext, CancellationToken token)
         {
+            QueueClient queueClient = AzureQueueStorageConnectionSettings.GetQueueClientFromConnectionString(_connectionString, _queueName);
+            queueClient.Create();
             /*_factory = new ConnectionFactory { HostName = _baseAddress.Host, Port = _baseAddress.Port };
             _connection = _factory.CreateConnection();
             _channel = _connection.CreateModel();

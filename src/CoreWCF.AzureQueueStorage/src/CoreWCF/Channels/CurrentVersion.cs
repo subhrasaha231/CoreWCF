@@ -4,7 +4,7 @@
 namespace CoreWCF.Channels
 {
     /// <summary>
-    /// Properties of the current RabbitMQ Service Model Version
+    /// Properties of the current Azure Queue Service Model Version
     /// </summary>
     internal static class CurrentVersion
     {

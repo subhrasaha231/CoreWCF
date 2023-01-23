@@ -5,6 +5,7 @@ namespace CoreWCF.Channels
 {
     internal class TransportDefaults
     {
-        internal const long DefaultMaxMessageSize = 8192L;
+        //max size of Azure Queue message can be upto 64KB
+        internal const long DefaultMaxMessageSize = 8000L; 
     }
 }
