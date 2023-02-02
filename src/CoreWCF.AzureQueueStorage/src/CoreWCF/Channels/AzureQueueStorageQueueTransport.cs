@@ -24,16 +24,16 @@ namespace CoreWCF.Channels
         private readonly string _queueName;
         private readonly string _deadLetterQueueConnectionString;
         private readonly string _deadLetterQueueName;
-        private readonly QueueClient _queueClient;
-        private readonly QueueClient _deadLetterQueueClient;
+        private readonly MessageQueue _queueClient;
+        private readonly DeadLetterQueue _deadLetterQueueClient;
         private readonly TimeSpan _queueReceiveTimeOut;
         private readonly TimeSpan _receiveMessagevisibilityTimeout;
         private readonly ILogger<AzureQueueStorageQueueTransport> _logger;
 
         public AzureQueueStorageQueueTransport(IServiceDispatcher serviceDispatcher, IServiceProvider serviceProvider)
         {
-            _queueClient = new QueueClient(_connectionString, _queueName);
-            _deadLetterQueueClient = new QueueClient(_deadLetterQueueConnectionString, _deadLetterQueueName);
+            _queueClient = serviceProvider.GetRequiredService<MessageQueue>();
+            _deadLetterQueueClient = serviceProvider.GetRequiredService<DeadLetterQueue>();
             _queueReceiveTimeOut = serviceDispatcher.Binding.ReceiveTimeout;
             _logger = serviceProvider.GetRequiredService<ILogger<AzureQueueStorageQueueTransport>>();
         }
@@ -71,7 +71,7 @@ namespace CoreWCF.Channels
             if (dispatchResult == QueueDispatchResult.Failed)
             {
                 //send message to dead letter queue
-                await _deadLetterQueueClient.SendMessageAsync(context.RequestMessage.ToString());
+                await _deadLetterQueueClient.SendMessageAsync(context.RequestMessage);
                 
             }
         }

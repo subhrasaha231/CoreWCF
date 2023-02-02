@@ -3,6 +3,7 @@
 
 using CoreWCF.Channels;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace CoreWCF.Configuration
 {
@@ -10,7 +11,8 @@ namespace CoreWCF.Configuration
     {
         public static IServiceCollection AddServiceModelAzureQueueStorageSupport(this IServiceCollection services)
         {
-            //add services
+            services.AddSingleton<MessageQueue, MessageQueue>();
+            services.AddSingleton<DeadLetterQueue, DeadLetterQueue>();
             return services;
         }
     }
