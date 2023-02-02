@@ -10,7 +10,9 @@ namespace CoreWCF.Channels
 {
     internal interface IQueueBase
     {
-        Task Send(PipeReader message, Uri endpoint);
+        public QueueClient queueClient { get; set; }
+
+        //Task Send(PipeReader message, Uri endpoint);
 
         public Task<Azure.Response<Azure.Storage.Queues.Models.QueueMessage>> ReceiveMessageAsync(TimeSpan? visibilityTimeout = default, System.Threading.CancellationToken cancellationToken = default);
 

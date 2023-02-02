@@ -8,14 +8,25 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Azure;
+using Azure.Storage.Queues;
 using Azure.Storage.Queues.Models;
 
 namespace CoreWCF.Channels
 {
     internal class MessageQueue : IQueueBase
     {
-        public Response DeleteMessage(string messageId, string popReceipt, CancellationToken cancellationToken = default) => throw new NotImplementedException();
-        public Task<Response<QueueMessage>> ReceiveMessageAsync(TimeSpan? visibilityTimeout = null, CancellationToken cancellationToken = default) => throw new NotImplementedException();
-        public Task Send(PipeReader message, Uri endpoint) => throw new NotImplementedException();
+        private QueueClient _client;
+
+        public QueueClient queueClient { get => _client; set => _client = value; }
+
+        public Response DeleteMessage(string messageId, string popReceipt, CancellationToken cancellationToken = default)
+        {
+            return _client.DeleteMessage(messageId, popReceipt, cancellationToken);
+        }
+
+        public Task<Response<QueueMessage>> ReceiveMessageAsync(TimeSpan? visibilityTimeout = null, CancellationToken cancellationToken = default)
+        {
+            return _client.ReceiveMessageAsync(visibilityTimeout, cancellationToken);
+        }
     }
 }

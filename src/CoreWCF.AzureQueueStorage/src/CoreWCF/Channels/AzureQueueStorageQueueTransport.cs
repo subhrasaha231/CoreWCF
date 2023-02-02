@@ -21,9 +21,6 @@ namespace CoreWCF.Channels
     public class AzureQueueStorageQueueTransport : IQueueTransport
     {
         private readonly string _connectionString;
-        private readonly string _queueName;
-        private readonly string _deadLetterQueueConnectionString;
-        private readonly string _deadLetterQueueName;
         private readonly MessageQueue _queueClient;
         private readonly DeadLetterQueue _deadLetterQueueClient;
         private readonly TimeSpan _queueReceiveTimeOut;
