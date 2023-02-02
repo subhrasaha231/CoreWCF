@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Azure.Identity;
 using Azure.Storage.Queues;
 
 namespace CoreWCF.Channels
@@ -14,6 +15,12 @@ namespace CoreWCF.Channels
             string connectionString,
             string queueName) {
             return new QueueClient(connectionString, queueName);
+        }
+
+        public static QueueClient GetQueueClientFromUri(
+            Uri uri)
+        {
+            return new QueueClient(uri, new DefaultAzureCredential());
         }
     }
 }
