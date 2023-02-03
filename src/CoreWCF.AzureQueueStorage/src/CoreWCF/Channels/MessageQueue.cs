@@ -17,6 +17,11 @@ namespace CoreWCF.Channels
     {
         private QueueClient _client;
 
+        public MessageQueue(string connectionString, string queueName)
+        {
+            _client = new QueueClient(connectionString, queueName);
+        }
+
         public QueueClient queueClient { get => _client; set => _client = value; }
 
         public Response DeleteMessage(string messageId, string popReceipt, CancellationToken cancellationToken = default)

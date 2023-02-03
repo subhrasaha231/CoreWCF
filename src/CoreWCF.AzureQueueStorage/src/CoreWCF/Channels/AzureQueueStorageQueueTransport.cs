@@ -20,19 +20,18 @@ namespace CoreWCF.Channels
 {
     public class AzureQueueStorageQueueTransport : IQueueTransport
     {
-        private readonly string _connectionString;
         private readonly MessageQueue _queueClient;
         private readonly DeadLetterQueue _deadLetterQueueClient;
-        private readonly TimeSpan _queueReceiveTimeOut;
         private readonly TimeSpan _receiveMessagevisibilityTimeout;
         private readonly ILogger<AzureQueueStorageQueueTransport> _logger;
+        private readonly Uri _baseAddress;
 
         public AzureQueueStorageQueueTransport(IServiceDispatcher serviceDispatcher, IServiceProvider serviceProvider)
         {
             _queueClient = serviceProvider.GetRequiredService<MessageQueue>();
             _deadLetterQueueClient = serviceProvider.GetRequiredService<DeadLetterQueue>();
-            _queueReceiveTimeOut = serviceDispatcher.Binding.ReceiveTimeout;
             _logger = serviceProvider.GetRequiredService<ILogger<AzureQueueStorageQueueTransport>>();
+            _baseAddress = serviceDispatcher.BaseAddress;
         }
 
         public int ConcurrencyLevel => 1;
@@ -49,7 +48,7 @@ namespace CoreWCF.Channels
             }
             _queueClient.DeleteMessage(queueMessage.MessageId, queueMessage.PopReceipt);
             var reader = PipeReader.Create(new ReadOnlySequence<byte>(queueMessage.Body.ToMemory()));
-            return GetContext(reader, new EndpointAddress(_connectionString));
+            return GetContext(reader, new EndpointAddress(_baseAddress));
         }
 
         private QueueMessageContext GetContext(PipeReader reader, EndpointAddress endpointAddress)
